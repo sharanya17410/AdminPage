@@ -175,39 +175,6 @@ app.get('/create/:id', (req, res) => {
     
 });
 
-function createGallery(id){
-  $('.tz-gallery').empty();
-  var xhr=new XMLHttpRequest();
-  xhr.open('GET','https://api.imgur.com/3/account/sharanya17410/album/'+id,true);
-  xhr.setRequestHeader('Authorization','Client-ID c2049e40de14fa8');
-  xhr.onload = function(){
-      if(this.status == 200){
-          var response = JSON.parse(this.responseText);         
-          var output='';                    
-          for(var i=0;i< response.data.images.length;i++){
-            if(i==0){
-              output+='<a class="lightbox" id="test" href=" '+response.data.images[i].link+'">'+
-                  '<img src="'+response.data.images[i].link+'" alt="">'+
-              '</a>';}
-              else{
-                output+='<a class="lightbox" href=" '+response.data.images[i].link+'">'+
-                  '<img src="'+response.data.images[i].link+'" alt="">'+
-              '</a>';
-              }
-              }
-              console.log(output);
-              document.querySelector('.tz-gallery').innerHTML=output;
-              baguetteBox.run('.tz-gallery',{animation: 'fadeIn',
-noScrollbars: true});
-var someLink = document.querySelector('#test');
-console.log(someLink);
-simulateClick(someLink);
-          
-      }
-  }
-  xhr.send();
-}
-  
 app.post('/upload', (req, res) => {
     upload(req, res, (err) => {
       if(err){
@@ -303,8 +270,8 @@ var transporter = nodemailer.createTransport( {
     secureConnection: false, // TLS requires secureConnection to be false
     port: 587, // port for secure SMTP
     auth: {
-        user: "sharanya.siddharth@outlook.com",
-        pass: "Tout536.."
+        user: "abc@outlook.com",
+        pass: "xxxxx"
     },
     tls: {
         ciphers:'SSLv3'
