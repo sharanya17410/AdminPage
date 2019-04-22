@@ -6,6 +6,10 @@ const request =require('request');
 const multer=require('multer');
 
 const fs=require('fs');
+const fileUpload = require('express-fileupload');
+
+
+// default options
 
 
 var nodemailer = require('nodemailer');
@@ -17,7 +21,7 @@ const app = express();
 //app.engine('handlebars',exphbs());
 app.set('view engine','hbs');
 exphbs.registerPartials(__dirname+'/views/partials')
-
+app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('./multer'));
@@ -137,6 +141,78 @@ app.get('/admin',(req,res)=>{
 
  
 });
+app.get('/addPictures/:id',(req,res)=>{
+  albumArray = albums.getAll();
+  console.log('Admin--------------------------------------------------------');
+  fs.writeFileSync('albums_id.txt',req.params.id);
+  res.render('addPictures');
+
+
+});
+
+
+
+app.post('/upload', function(req, res) {
+
+  if (Object.keys(req.files).length == 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+  
+  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+  let sampleFile = req.files.sampleFile;
+console.log(sampleFile.name);
+  // Use the mv() method to place the file somewhere on your server
+  sampleFile.mv('E:/Web Dev/mailernode/public/img/imgur-file-upload/'+sampleFile.name, function(err) {
+    if (err)
+      return res.status(500).send(err);
+
+    //joining path of directory 
+const directoryPath = path.join(__dirname, '/public/img/imgur-file-upload/');
+//passsing directoryPath and callback function
+fs.readdir(directoryPath, function (err, files) {
+    //handling error
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    //listing all files using forEach
+    files.forEach(function (file) {
+        // Do whatever you want to do with the file
+        request.post({
+          headers: { 'Authorization': 'Client-ID ' + 'c2049e40de14fa8'},
+          url:     'https://api.imgur.com/3/image',
+          formData:    { image:  fs.createReadStream(`./public/img/imgur-file-upload/${file}`)},
+      }, function(err, response, body){
+          if(err){
+              console.log(err);
+          }
+
+          console.log('Image:'+JSON.parse(body).data.link);
+          var image_deletehash= JSON.parse(body).data.deletehash;
+          var album_id=fs.readFileSync('./albums_id.txt','utf8');
+          console.log('checking type:'+typeof album_id);
+          console.log('Uploading pics , album id : '+album_id);
+          var album_info=albums.getalbum(album_id);
+          var album_deletehash = album_info[0].deletehash;
+          console.log('albums del hash:'+album_deletehash);
+          request.post({
+            headers: { 'Authorization': 'Client-ID ' + 'c2049e40de14fa8'},
+            url:     `https://api.imgur.com/3/album/${album_deletehash}/add`,
+            formData: {'deletehashes[]':image_deletehash},
+        }, function(err, response, body){
+            if(err){
+                console.log(err);
+            }
+            console.log('uploaded!!!!-body:'+JSON.stringify(body,2,0));
+           // console.log('uploaded!!!!-response:'+JSON.parse(response));
+            
+          });
+        }); 
+        console.log('inside: '+file); 
+    });
+});
+    res.send('File uploaded!');
+  });
+});
 
 // app.post('/anyurl/', (req, res) => {
 //   app.post('/createEmp', function(req, res){  
@@ -145,27 +221,39 @@ app.get('/admin',(req,res)=>{
 //     });  // send the response in the form of json
 // })
 ///----------------------here------------------------------------
+
 app.get('/create/:id', (req, res) => {
   var id = (req.params.id);
   console.log(`AT server ${id}`);
   console.log(req.params);
   var title = albums.getalbum(id);
-  console.log('title',title);
+  console.log('title',title[0].albumtitle);
   var array = [];
   request({
     headers: { 'Authorization': 'Client-ID ' + 'c2049e40de14fa8'},
     url:`https://api.imgur.com/3/account/sharanya17410/album/${id}`,
   },(error,response,body)=>{
      if(!error && response.statusCode=== 200){
-           //console.log(JSON.parse(body));
+           console.log('bhjbkhbk:'+JSON.parse(body).data);
            var images=JSON.parse(body).data.images;
+           console.log('check1:'+JSON.parse(body).data);
+           console.log(JSON.stringify(images,0,2));
            for(var i =0;i<images.length;i++){
            console.log(images[i].link);
-           array.push({ imagelink : images[i].link});
+           console.log(images[i].id);
+           array.push({ imagelink : images[i].link,imageid : images[i].id});
+           
            
           }
           console.log('before render');
-          res.render('gallery' ,{title :title.albumtitle, description : title.description, album:array})
+          //array.push('imagelink : '+title.albumtitle);
+         // console.log(title.id);
+          array.push({title : title[0].albumtitle});
+          array.push({description : title[0].description});
+          array.push({id : title[0].id});
+          
+          //res.params("title" :title.albumtitle, "description" : title.description, "album":array);
+          res.send({album:array});
           console.log('after render');
         }else{
             console.log('Unable to fetch album info');
@@ -175,7 +263,13 @@ app.get('/create/:id', (req, res) => {
     
 });
 
-app.post('/upload', (req, res) => {
+app.get('/view-albums', (req, res) => {
+  res.render('admin',{
+    albums : albumArray
+});
+});
+
+app.post('/test/upload', (req, res) => {
     upload(req, res, (err) => {
       if(err){
         res.render('admin', {

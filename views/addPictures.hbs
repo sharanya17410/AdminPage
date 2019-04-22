@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Admin|Add Pictures</title>
+    <script src="https://unpkg.com/scrollreveal/dist/scrollreveal.min.js"></script>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="../public/css/addPictures.css">
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+
+<form ref='uploadForm' 
+      id='uploadForm' 
+      action='http://localhost:3000/upload' 
+      method='post' 
+      encType="multipart/form-data">
+        <input type="file" name="sampleFile" />
+        <input type='submit' value='Upload!' />
+    </form>
+
+<div class="custom-file-picker"> 
+    <div class="picture-container form-group">
+        <h4 class="info_text">Upload Pictures</h4>
+        <div class="picture">
+            <span class="icon"><i class="fas fa-file-upload"></i></span>
+            
+            <input type="file" class="wizard-file" multiple id="a8755cf0-f4d1-6376-ee21-a6defd1e7c08">
+            
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 37 37" xml:space="preserve">
+                <path class="circ path" style="fill:none;stroke:#DC143C;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:10;" d="M30.5,6.5L30.5,6.5c6.6,6.6,6.6,17.4,0,24l0,0c-6.6,6.6-17.4,6.6-24,0l0,0c-6.6-6.6-6.6-17.4,0-24l0,0C13.1-0.2,23.9-0.2,30.5,6.5z"></path>
+                <polyline class="tick path" style="fill:none;stroke:#DC143C;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:10;" points="11.6,20 15.9,24.2 26.4,13.8 "></polyline>
+            </svg>
+        </div>     
+    </div>
+    <div class="popover-container text-center">
+        <p data-toggle="popover" data-id="a8755cf0-f4d1-6376-ee21-a6defd1e7c08" class="btn-popover" data-original-title="" title="">
+            <span class="file-total-viewer">0</span> Files Selected <input type="button" value="view" href="javascript:void(0)" class="btn btn-success btn-xs btn-file-view" style="background-color :#DC143C">
+        </p>
+    </div>
+    <input type="button" value="Upload" href="javascript:void(0)" class="btn btn-success btn-xs btn-file-upload" style="background-color :#DC143C">
+</div>
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+    //Global object to store the files
+let fileStorage = {};
+
+$(document).ready(function(){
+   //Handle the file change
+   $("input[type='file']").change(function(e){
+      /* if (e.target.files && e.target.files[0]) {
+            var reader = new FileReader();
+            var img='';
+            reader.onload = function (e) {
+                //$('#blah')
+                //    .attr('src', e.target.result)
+                //    .width(150)
+                //    .height(200);
+                     $(document.createElement('img')) //Equivalent: $(document.createElement('img'))
+                    .attr('src', e.target.result)
+                    .width(150)
+                    .height(200)
+                    .appendTo('#imagePreview');
+            };
+
+            reader.readAsDataURL(e.target.files[0]);
+        }*/
+      //Get the id
+      let id = e.target.id;
+
+      //Get the files
+      let files = e.target.files;
+
+      //Store the file
+      storeFile(id, files);
+
+      //Show the complete icon
+      $(this).siblings('.icon').hide();
+      $(this).parent().removeClass('drawn');
+      setTimeout(() => {
+         $(this).parent().addClass('drawn');
+      }, 50); 
+   });
+  
+    //Store the file for particular filepicker
+    let storeFile = (id, files) => {
+        //console.log(files[0].mozFullPath);
+      fileStorage[id] = files;
+
+      //Update the file count
+      $(`[data-id="${id}"] > .file-total-viewer`).text(files.length);
+    }
+    
+    //Show file list
+    $('[data-toggle="popover"]').popover({
+        html: true,
+        title: "Files",
+        placement:"bottom",
+        content: function () {
+          //Get the id of the file picker
+          let id = $(this).attr('data-id');
+
+          //Get all the files of this filepicker
+          let items = fileStorage[id];
+
+          //Preview the file 
+          let template = '<div class="row">';
+          if(items && items.length){
+            for(let val of items){
+                console.log(val);
+               template += "<div class='col-12 pb10'><span class='popover-content-file-name'>" + val.name + "</span><span class='popover-content-remove' data-target='" + id + "' data-name='" + val.name + "' data-type='upload'><i class='fas fa-trash'></i></span></div>"
+             }
+           }else{
+             template += "<div class='col-12 pb10'><span class='popover-content'>No file</span></div>";
+           }
+
+           template += '</div>';
+           return template;
+         }
+    });
+  document.querySelector('.btn-file-upload').addEventListener('click',function(){
+       let id = $(this).attr('data-id');
+        let items = fileStorage[id];
+console.log('upload was clicked');
+          //Get all the files of this filepicker
+          
+
+          //Preview the file 
+          let template = '<div class="row">';
+          if(items && items.length){
+            for(let val of items){
+                console.log(val);
+               var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                //$('#blah')
+                //    .attr('src', e.target.result)
+                //    .width(150)
+                //    .height(200);
+            var img=$(document.createElement('img')) //Equivalent: $(document.createElement('img'))
+                    .attr('src', val.name)
+                    .width(150)
+                    .height(200);
+                    img.appendTo('#imagePreview');
+            };
+
+            reader.readAsDataURL(val.name);
+             }
+           }else{
+             template += "<div class='col-12 pb10'><span class='popover-content'>No file</span></div>";
+           }
+
+           template += '</div>';
+
+  })
+   //Prevent multiple popover
+   $('body').on('click', function (e) {
+       $('[data-toggle="popover"],[data-original-title]').each(function () {
+           //the 'is' for buttons that trigger popups
+           //the 'has' for icons within a button that triggers a popup
+           if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+              (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false;  // fix for BS 3.3.6
+           }
+      });
+  });
+  
+  //Delete files
+  $(document).on('click', '.popover-content-remove', function (e) {
+      //Get the id whose file to delete
+      let id = $(this).attr('data-target');
+
+      //Get the name of the file to delete
+      let name = $(this).attr('data-name');
+
+      //Confirm delete
+      let isDelete = confirm("Do you really want to delete this file?");  
+
+      //If confirmed
+      if (isDelete) {
+         //Remove the requested file
+         let files = Object.values(fileStorage[id]);
+         let newArr = files.filter((e) => { return e.name !== name; });
+
+         //Update the list
+         storeFile(id, newArr);
+
+          //If there is no file then show No file
+          if(newArr.length === 0){
+                $(this).parent().parent().append("<div class='col-12 pb10'><span class='popover-content'>No file</span></div>");
+           }
+
+           //Remove the current file
+           $(this).parent().remove();
+        }
+  });
+});
+</script>
+
+</body>
+</html>

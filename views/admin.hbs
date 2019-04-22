@@ -33,7 +33,7 @@
             <ul class="list-unstyled components">
                 <p>Menu</p>
                 <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                    <a href="/admin" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
                             <a href="#">Home 1</a>
@@ -47,7 +47,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#">About</a>
+                    <a href="/admin">About</a>
                 </li>
                 <li>
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
@@ -102,7 +102,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="nav navbar-nav ml-auto">
                                 <li class="nav-item active">
-                                    <a class="nav-link" href="#">Page</a>
+                                    <a class="nav-link" href="/admin">Home</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#">Page</a>
@@ -119,10 +119,10 @@
                 </div>
             </nav>
 
-            <h2>Portfolio</h2>
+            <h2>Home</h2>
             
                 <button class='btn btn-dark'data-toggle="modal" data-target="#exampleModal">Create an album</button>
-            
+                                  <button type="submit" class="btn btn-primary view-albums">View Albums</button>
             <br>
             <br>
             <!-- Button trigger modal -->
@@ -150,9 +150,11 @@
                 <input name="myImage" type="file" class="form-control-file" id="exampleFormControlFile1">
             </div>
             
-                <button type="submit" class="btn btn-primary">Create album</button>
+                 <button type="submit" class="btn btn-primary">Create album</button>
+   
             
         </form>
+   
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -162,15 +164,19 @@
   </div>
 </div>
             <div class="card-container wrapper">    
-                    <div class="row">
+                    <div class="row albumcards">
                         {{#each albums}}
                             <div class="col-md-4 mt-6 albums" id="{{this.id}}">
-                                <div class="card">  
+                                <div class="card" id="select">  
                                     <img class="card-img-top" src="{{this.imagelink}}" alt="Card image cap">
                                     <div class="card-body text-center">
                                         <h4 class="card-title">{{this.albumtitle}}</h4>
                                         <p class="card-text span3">{{this.description}}</p>
-                                        <button type="submit" class="btn btn-dark buttons">Add Pictures</button>
+                                        <button type="submit" id="viewPictures" class="btn btn-dark buttons">View Pictures</button>
+                                        <hr>
+                                        <button type="submit" id="addPicsButton" class="btn btn-dark addPics">Add Pictures</button>
+                                        <hr>
+                                        <button type="submit" id="deleteAlbum" class="btn btn-dark">Delete Album</button>
                                         {{!-- <button type="submit" class="btn btn-dark buttonsdel span1 mt-2">View Pictures</button>
                                         <button type="submit" class="btn btn-dark buttonsview span1 mt-2">Delete Pictures</button> --}}
                                     </div>                           
@@ -179,12 +185,16 @@
                         {{/each}}
                     </div>
             </div>
+           
+            <div class="tz-gallery container">
+              
+                
             </div>
         </div>
     
         </div>
     </div>
-
+</div>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <!-- Popper.JS -->
@@ -193,8 +203,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
     <!-- jQuery Custom Scroller CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.js"></script>
     <script>
+        $('.tz-gallery').hide();
             // ScrollReveal (https://github.com/jlmakes/scrollreveal)
     
             (function scrollReveal() {
@@ -238,7 +249,27 @@
     </script>
    
 <script>
-       
+    var buttons_add = document.getElementsByClassName('addPics');
+       // console.log(buttons);
+for (var i = 0; i < buttons_add.length; i++) {
+//console.log(document.getElementsByClassName('addpictures'));
+buttons_add[i].addEventListener('click',function(){
+    console.log('yay i was clicked');
+    window.location.href = '/addPictures/'+$(this).closest('div').parent().parent().attr("id");;
+   //      {{!-- var url="http://localhost:3000/create/"+$(this).closest('div').parent().parent().attr("id");   
+     //     fetch("http://localhost:3000/view-albums")        
+       //   .then(dataWrappedByPromise => dataWrappedByPromise.json())
+//.then(data => {
+  //  console.log(data);
+//}); --}}
+
+});}
+
+//$('.add-pictures').click(function() {
+  //  console.log('yay i was clicked');
+    //window.location.href = '/addPictures';
+    //return false;
+//});       
 var buttons = document.getElementsByClassName('buttons');
        // console.log(buttons);
 for (var i = 0; i < buttons.length; i++) {
@@ -255,21 +286,68 @@ for (var i = 0; i < buttons.length; i++) {
         .catch(error => console.log('error:', error)); --}}*/
 
           fetch(url)        
-            .then((res) => console.log(res.text()))
-             .catch(error => console.log('error:', error));
+          .then(dataWrappedByPromise => dataWrappedByPromise.json())
+.then(data => {
+    // you can access your data here
+    console.log('id:'+data.album[0].imageid);
+    console.log(data);
+    console.log(data.description);
+     $('.tz-gallery').show();
+      $('.tz-gallery .row').empty();
+                  $('.card-container').hide();
+                  var output='<h1 class="text-center id="'+data.album[data.album.length-1].id+'>'+data.album[data.album.length-3].title+'</h1>'+
+                    '<p class="page-description text-center">'+ data.album[data.album.length-2].description+'</p>'+
+                    '<div class="row">';                    
+                  for(var i=0;i< data.album.length-2;i++){
+                        output+=' <div class="col-sm-6 col-md-4">'      
+                        output+='<a class="lightbox" href=" '+data.album[i].imagelink+'">'+
+                            '<img src="'+data.album[i].imagelink+'" id="'+data.album[i].imageid+'" class="img-fluid" alt="">'+
+                        '</a>'+
+                        '</div>';}
+                        output+='</div>';
+                        console.log(output);
+                        //baguetteBox.run('.tz-gallery',{animation: 'fadeIn',
+    //noScrollbars: true});
+                        document.querySelector('.tz-gallery').innerHTML=output;                 
+      //                  baguetteBox.run('.tz-gallery',{animation: 'fadeIn',
+    //noScrollbars: true});
 
+})
+          /*  {{!-- .then(function((res) => {console.log(res.text());}))
+             .catch(error => console.log('error:', error)); --}}*/
+                
 });
     
     }
 
-var buttonsview = document.getElementsByClassName('buttonsview');
-       // console.log(buttons);
-for (var i = 0; i < buttons.length; i++) {
-    buttonsview[i].addEventListener('click', function() {    
-       console.log($(this).closest('div').parent().parent().attr("id"));    
-      });
-    }
+//document.getElementsByClassName('view-albums').addEventListener('click',function(){
+//         var url="http://localhost:3000/create/"+$(this).closest('div').parent().parent().attr("id");   
+//          fetch("http://localhost:3000/view-albums")        
+//          .then(dataWrappedByPromise => dataWrappedByPromise.json())
+//.then(data => {
+//    console.log(data);
+//});
+//}); 
+var check=document.getElementById('select');
+var buttons_card=Array.prototype.slice.call(check.querySelectorAll('.buttons'));
+console.log(Array.prototype.slice.call(check.querySelectorAll('.buttons')));
 
+
+//var children = [].slice.call(document.getElementById('select').getElementsByTagName('*'),0);
+
+//console.log(children);
+/*
+var elemnts = new Array(children.length);
+var arrayLength = children.length;
+for (var i = 0; i < arrayLength; i++) {
+    var name = children[i].getAttribute("id")||children[i].getAttribute("class");    
+    elemnts[i]=name;
+}
+document.getElementById('output').innerHTML = elemnts.join('\</br>');*/
+
+document.getElementById('deleteAlbum').addEventListener('click',function(){
+    console.log('delete was clicked!!');
+});
 </script>
 </body>
 

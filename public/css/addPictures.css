@@ -1,0 +1,117 @@
+.picture-container{
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.picture{
+    width: 100px;
+    height: 100px;
+    background-color: #fff;
+    color: #FFFFFF;
+    margin: 5px auto;
+    overflow: hidden;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.picture > .icon{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    color: #37474F;
+    border: 4px solid #CCCCCC;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.picture:hover .icon{
+    border-color: #DC143C;
+}
+
+.picture > .icon > svg{
+    height: 1.4em;
+    font-size: 4em;
+}
+
+.picture > svg{
+    width: 100%;
+    height: 100%;
+}
+
+.picture input[type="file"]{
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    left: 0;
+    opacity: 0 !important;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    right: 0;
+    bottom: 0;
+}
+
+/*svg tick animation*/
+.circ {
+    opacity: 0;
+    display: none;
+    stroke-dasharray: 130;
+    stroke-dashoffset: 130;
+    -webkit-transition: all .75s;
+    -moz-transition: all .75s;
+    -ms-transition: all .75s;
+    -o-transition: all .75s;
+    transition: all .75s;
+}
+.tick{
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    -webkit-transition: stroke-dashoffset .4s 0.5s ease-out;
+    -moz-transition: stroke-dashoffset .4s 0.5s ease-out;
+    -ms-transition: stroke-dashoffset .4s 0.5s ease-out;
+    -o-transition: stroke-dashoffset .4s 0.5s ease-out;
+    transition: stroke-dashoffset .4s 0.5s ease-out;
+}
+.drawn > svg .path{
+    display: block;
+    opacity: 1;
+    stroke-dashoffset: 0;
+}
+
+.drawn{
+    border-color: #fff;
+}
+
+[data-toggle="popover"]{
+    cursor: pointer;
+}
+
+span.popover-content-remove {
+    padding-left: 10px;
+    color: red;
+    cursor: pointer;
+    float: right;
+}
+
+.pb10{
+    padding-bottom: 10px;
+}
+
+.popover-header{
+    text-align: center;
+}
+
+.popover{
+    min-width: 200px;
+}

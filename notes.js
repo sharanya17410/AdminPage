@@ -13,7 +13,7 @@ const fs =require('fs');
 var fetchalbums= ()=>{
     try{
         console.log('Fetching albums');
-        var albumsString=fs.readFileSync('albums.json');
+        var albumsString=fs.readFileSync('albums.json','utf8');
         //console.log(JSON.parse(albumsString));
         return JSON.parse(albumsString);
       }  catch(e){
